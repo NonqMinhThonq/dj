@@ -1,0 +1,78 @@
+{% extends 'frame/base.html' %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+{% if messages %}
+<div style="margin: 10px auto; max-width: 85%;">
+    {% for message in messages %}
+    <div style="padding: 10px; margin-bottom: 10px; border: 1px solid; border-radius: 5px; background-color: #f8f9fa;">
+        <p style="margin: 0; color: {% if message.tags == 'success' %}green{% else %}red{% endif %};">
+            {{ message }}
+        </p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="career-detail" style="margin: 0 auto; max-width: 85%; padding: 20px;">
+    <div style="display: flex; gap: 20px;">
+        <!-- Phần Career chi tiết -->
+        <div style="flex: 3;">
+            <h1 style="text-align: center; margin-bottom: 20px;">{{ career.name }}</h1>
+            <div style="margin-bottom: 20px;">
+                <!-- Bọc Ngày trong một div để căn phải -->
+                <div style="text-align: right;">
+                    <p><strong>Ngày:</strong> {{ career.date|date:"b. d, Y" }}</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                {% if career.image %}
+                <img src="{{ career.image.url }}" alt="{{ career.name }}" style="width: 500px; height: auto; border-radius: 10px; margin-bottom: 20px;">
+                {% endif %}
+            </div>
+
+            <div style="text-align: left; margin-top: 20px;">
+                <p><strong>Mô tả:</strong> {{ career.description }}</p>
+                <p><strong>Lĩnh vực:</strong> {{ career.field }}</p>
+                <p><strong>Yêu cầu ứng viên:</strong> {{ career.requirement }}</p>
+                <p><strong>Số lượng tuyển:</strong> {{ career.number_of_recruitment }}</p>
+                <p><strong>Địa điểm:</strong> {{ career.location }}</p>
+                <p><strong>Ngày bắt đầu:</strong> {{ career.start }}</p>
+                <p><strong>Ngày kết thúc:</strong> {{ career.end }}</p>
+            </div>
+
+            <div style="margin-top: 30px; text-align: center;">
+                {% if not is_applied %}
+                    <a href="{% url 'select_students_for_internship' career.id %}" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; text-decoration: none; cursor: pointer;">
+                        Ứng tuyển
+                    </a>
+                {% else %}
+                    <p>Bạn đã apply công việc này.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Phần Career khác -->
+        <div style="width: 20%; padding-left: 20px; margin-top: 3em;">
+            <h4 style="text-align: center;">Career Liên quan</h4>
+            <ul style="list-style: none; padding: 0;">
+                {% for other_career in other_careers %}
+                <li style="margin-bottom: 15px;">
+                    <a href="{% url 'career_detail' other_career.id %}" style="text-decoration: none; color: #007bff; display: flex; align-items: center; gap: 10px;">
+                        {% if other_career.image %}
+                        <img src="{{ other_career.image.url }}" alt="{{ other_career.name }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
+                        {% endif %}
+                        <div style="flex: 1; overflow: hidden;">
+                            <h5 style="margin: 0; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ other_career.name }}</h5>
+                            <p style="margin: 0; font-size: 14px; color: #666;">{{ other_career.date|date:"b. d, Y" }}</p>
+                        </div>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

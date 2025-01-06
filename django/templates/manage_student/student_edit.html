@@ -1,0 +1,149 @@
+{% extends 'frame/base.html' %}
+{% block content %}
+
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    {% for message in messages %}
+    <div
+      class="toast align-items-center text-bg-{{ message.tags }} border-0"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      data-bs-delay="50000"
+      data-bs-autohide="true"
+    >
+      <div class="toast-header">
+        <strong class="me-auto">
+          {% if message.tags == 'success' %}
+          <i class="bi bi-check-circle-fill text-success"></i> Thành công
+          {% elif message.tags == 'error' %}
+          <i class="bi bi-exclamation-circle-fill text-danger"></i> Lỗi
+          {% else %}
+          <i class="bi bi-bell-fill"></i> Thông báo
+          {% endif %}
+        </strong>
+        <small class="text-muted">Vừa xong</small>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="toast"
+          aria-label="Đóng"
+        ></button>
+      </div>
+      <div class="toast-body">
+        {{ message }}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+<div class="container my-5">
+    <h2 class="mb-4 text-center">Chỉnh sửa thông tin sinh viên </h2>
+    <form method="POST" class="bg-light p-4 rounded shadow-sm">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="name" class="form-label">Họ tên sinh viên:</label>
+                <input type="text" name="name" id="name" class="form-control" value="{{ student.name }}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="email" class="form-label">Địa chỉ Email:</label>
+                <input type="email" name="email" id="email" class="form-control" value="{{ student.email }}" required>
+            </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+              <label for="gender" class="form-label">Giới tính:</label>
+              <input type="text" name="gender" id="gender" class="form-control" value="{{ student.gender }}" required>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="date_of_birth" class="form-label">Ngày sinh:</label>
+            <input type="date" name="date_of_birth" id="date_of_birth" class="form-control" value="{{ student.date_of_birth|date:'Y-m-d' }}" required>
+          </div>
+      </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="phone" class="form-label">Số điện thoại:</label>
+                <input type="text" name="phone" id="phone" class="form-control" value="{{ student.phone }}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="address" class="form-label">Địa chỉ :</label>
+                <input type="text" name="address" id="address" class="form-control" value="{{ student.address }}" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="academic_year" class="form-label">Sinh viên năm:</label>
+                <input type="text" name="academic_year" id="academic_year" class="form-control" value="{{ student.academic_year }}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="lop" class="form-label">Lớp:</label>
+                <input type="text" name="lop" id="lop" class="form-control" value="{{ student.lop }}" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="gpa" class="form-label">Điểm Trung bình:</label>
+                <input type="text" name="gpa" id="gpa" class="form-control" value="{{ student.gpa }}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="year_of_admission" class="form-label">Nhập học:</label>
+                <input type="date" name="year_of_admission" id="year_of_admission" class="form-control" value="{{ student.year_of_admission|date:'Y-m-d' }}" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="major" class="form-label">Ngành:</label>
+                <select name="major" id="major" class="form-control form-check">
+                    <option value=""> Select Major </option>
+                    {% for major in majors %}
+                        <option value="{{ major.id }}" {% if student.major and student.major.id == major.id %}selected{% endif %}>{{ major.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6 mb-3 ">
+                <label for="Awards" class="form-label">Giải thưởng:</label>
+                <input type="text" name="Awards" id="Awards" class="form-control" value="{{ student.awards }}">
+            </div>
+        </div>
+
+        
+        <div class="row">
+
+            <div class=" col-md-6 mb-3 form-check ">
+                <input type="checkbox" name="status" id="status" class="form-check-input" {% if student.status %}checked{% endif %}>
+                <label for="status" class="form-check-label">Trạng thái </label>
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <button type="submit" class="btn btn-primary">Xác nhận</button>
+        </div>
+        <a href="{% url 'student_list' %}">Quay lại danh sách </a>
+    </form>
+</div>
+
+
+<!-- Thêm Bootstrap -->
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- JavaScript để kích hoạt Toast -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const toastElements = document.querySelectorAll(".toast");
+    toastElements.forEach((toastElement) => {
+      const toast = new bootstrap.Toast(toastElement, {
+        autohide: true,
+        delay: 5000, // 50 giây
+      });
+      toast.show();
+    });
+  });
+</script>
+
+{% endblock %}

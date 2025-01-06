@@ -1,0 +1,291 @@
+{% extends 'frame/base.html' %}
+{% load custom_filters %}
+{% block content %}
+<div class="row">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            tổng số khoa</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_majors }}</div>
+                    </div>
+                    <div class="col-auto"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            tổng số sinh viên</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_student }}</div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">workshop </div>
+                        
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_workshop }}</div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Công việc đã ứng tuyển</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_applied }}</div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Lịch sử thành lập trường</h6>
+            </div>
+            <div class="card-body">
+                <p>Đại học Quốc gia Hà Nội được thành lập theo Nghị định số 97/CP ngày 10.12.1993 của Chính phủ với sứ mạng là đại học trọng điểm quốc gia - một trung tâm đào tạo chất lượng cao, trình độ cao gắn với nghiên cứu khoa học, chuyển giao tri thức và công nghệ đa ngành, đa lĩnh vực, ngang tầm khu vực, tiến tới đạt trình độ quốc tế, làm nòng cột và đầu tàu đổi mới cho hệ thống giáo dục nước nhà.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Sứ mệnh</h6>
+            </div>
+            <div class="card-body">
+                <p>Trường Quốc tế có sứ mệnh đào tạo nguồn nhân lực chất lượng cao đáp ứng nhu cầu của thị trường lao động trong nước
+                     và quốc tế trên cơ sở áp dụng sáng tạo các thành tựu giáo dục, khoa học và công nghệ tiên tiến vào môi trường văn
+                      hóa Việt Nam, thực hiện đào tạo toàn bộ các chương trình bằng ngoại ngữ. Sứ mệnh đó hiện đang được thực hiện theo 3 trụ cột.</p>
+            </div>
+        </div>  
+    </div>
+</div>
+<div class="row">
+    <div class="col-xl-8 col-lg-7">
+        <div class="card shadow mb-4">
+            <div
+                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Thống kê sinh viên theo năm</h6>
+                <div class="dropdown no-arrow">
+                    
+                </div>
+            </div>
+            <div class="card-body2">
+                <div class="chart-area">
+                    <canvas id="myAreaChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-lg-5">
+        <div class="card shadow mb-4">
+            <div
+                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Thống kê Số lượng công việc theo ngành</h6>
+            </div>
+            <div class="card-body2">
+                <div class="chart-pie pt-4 pb-2">
+                    <canvas id="myPieChart"></canvas>
+                </div>
+                <div class="mt-4 text-center small">
+                    <div class="row">
+                        {% for label, color in labels|zip_lists:colors %}
+                        <span class="mr-2">
+                            <i class="fas fa-circle" style="color: {{ color }}"></i> {{ label }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .chart-area,
+    .chart-pie {
+      height: 400px; /* Đặt chiều cao cố định cho phần biểu đồ */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  
+    .card-body2  {
+      height: 420px; /* Đảm bảo toàn bộ phần card-body đều cao như nhau */
+    }
+  
+    canvas {
+      max-height: 100%; /* Đảm bảo biểu đồ nằm gọn trong container */
+      max-width: 100%;
+    }
+  </style>
+  
+<!-- Thêm Bootstrap -->
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Thêm Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- JavaScript để kích hoạt Toast -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const toastElements = document.querySelectorAll(".toast");
+    toastElements.forEach((toastElement) => {
+      const toast = new bootstrap.Toast(toastElement, {
+        autohide: true,
+        delay: 5000, // 5 giây
+      });
+      toast.show();
+    });
+
+    // Pie Chart Example
+    var ctx = document.getElementById("myPieChart");
+    var myPieChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: {{ labels|safe }},
+        datasets: [{
+          data: {{ data|safe }},
+          backgroundColor: {{ colors|safe }},
+          hoverBackgroundColor: {{ colors|safe }},
+          hoverBorderColor: "rgba(234, 236, 244, 1)",
+        }],
+      },
+      options: {
+        maintainAspectRatio: false,
+        tooltips: {
+          backgroundColor: "rgb(255,255,255)",
+          bodyFontColor: "#858796",
+          borderColor: '#dddfeb',
+          borderWidth: 1,
+          xPadding: 15,
+          yPadding: 15,
+          displayColors: false,
+          caretPadding: 10,
+        },
+        legend: {
+          display: false
+        },
+        cutoutPercentage: 80,
+      },
+    });
+  });
+</script>
+
+<script>
+    // Lấy dữ liệu từ context Django
+    const areaLabels = {{ area_labels|safe }};
+    const areaData = {{ area_data|safe }};
+
+    // Tạo biểu đồ đường (Line Chart)
+    const ctx = document.getElementById('myAreaChart').getContext('2d');
+    const myAreaChart = new Chart(ctx, {
+        type: 'line', // Loại biểu đồ
+        data: {
+            labels: areaLabels, // Trục X (các nhãn)
+            datasets: [{
+                label: 'Số lượng sinh viên', // Tên dataset
+                data: areaData, // Dữ liệu trục Y
+                borderColor: 'rgba(54, 162, 235, 1)', // Màu đường viền
+                backgroundColor: 'rgba(54, 162, 235, 0.2)', // Màu nền dưới đường
+                fill: true, // Đổ màu bên dưới đường
+                tension: 0.3, // Làm đường cong mềm mại
+                pointBackgroundColor: 'rgba(54, 162, 235, 1)', // Màu điểm trên biểu đồ
+                pointBorderColor: '#fff', // Viền điểm
+                pointHoverBackgroundColor: '#fff', // Màu nền khi hover điểm
+                pointHoverBorderColor: 'rgba(54, 162, 235, 1)', // Viền khi hover điểm
+            }],
+        },
+        options: {
+            responsive: true, // Biểu đồ tự động co giãn theo kích thước
+            maintainAspectRatio: false, // Giữ tỉ lệ kích thước
+            plugins: {
+                legend: {
+                    display: true, // Hiển thị chú thích
+                    position: 'top', // Vị trí trên đầu
+                    align: 'end', // Căn góc phải trên
+                    labels: {
+                        font: {
+                            size: 14, // Kích thước chữ
+                            family: 'Arial', // Font chữ
+                        },
+                        color: '#333', // Màu chữ
+                    },
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.label}: ${context.raw} sinh viên`;
+                        },
+                    },
+                },
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true, // Hiển thị tiêu đề trục X
+                        text: 'sinh viên năm', // Tiêu đề trục X
+                        font: {
+                            size: 14,
+                            family: 'Arial',
+                        },
+                        color: '#555',
+                    },
+                },
+                y: {
+                    beginAtZero: true, // Bắt đầu từ 0
+                    title: {
+                        display: true, // Hiển thị tiêu đề trục Y
+                        text: 'Số lượng sinh viên', // Tiêu đề trục Y
+                        font: {
+                            size: 14,
+                            family: 'Arial',
+                        },
+                        color: '#555',
+                    },
+                    ticks: {
+                        stepSize: 10, // Khoảng cách giữa các bước trên trục Y
+                        color: '#333', // Màu chữ
+                        font: {
+                            size: 12,
+                        },
+                    },
+                },
+            },
+        },
+    });  
+</script>
+
+{% endblock %}

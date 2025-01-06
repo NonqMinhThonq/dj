@@ -1,0 +1,92 @@
+{% extends 'frame/base.html' %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+<h1 style="text-align: center; margin-bottom: 20px;">Danh sách công việc đã ứng tuyển </h1>
+<div class="table-responsive shadow">
+    {% if applied_careers %}
+        <table class="table table-hover table-striped align-middle">
+            <thead class="thead-dark">
+                <tr>
+                    <th>STT</th>
+                    <th>Công việc</th>
+                    <th>Số lượng tuyển</th>
+                    <th>Địa điểm Thực tập</th>
+                    <th>Ngày tạo</th>
+                    <th>Chi tiết</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for applied_career in applied_careers %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ applied_career.career.name }}</td>
+                    <td>{{ applied_career.career.number_of_recruitment }}</td>
+                    <td>{{ applied_career.career.location }}</td>
+                    <td>{{ applied_career.career.date }}</td>
+                    <td>
+                        <a href="{% url 'applied_career_detail' applied_career.career.id %}" class="btn btn-info">Chi tiết</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Bạn chưa apply vào công việc nào.</p>
+    {% endif %}
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <div class="container">
+            <div class="pagination-container d-flex justify-content-between align-items-center">
+                <div class="pagination-info">
+                    Hiện thị từ {{ applied_careers.start_index }} đến {{ applied_careers.end_index }} của {{ applied_careers.paginator.count }} Công việc
+                </div>
+                <nav aria-label="Pagination">
+                    <ul class="pagination">
+                        {% if applied_careers.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="?page={{ students.previous_page_number }}">
+                                Trước
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">Trước</span>
+                        </li>
+                        {% endif %}
+                        
+                        {% for num in custom_page_range %}
+                            {% if num == '...' %}
+                            <li class="page-item disabled">
+                                <span class="page-link">...</span>
+                            </li>
+                            {% else %}
+                            <li class="page-item {% if applied_careers.number == num %}active{% endif %}">
+                                <a class="page-link"
+                                    href="?page={{ num }}">
+                                    {{ num }}
+                                </a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if applied_careers.has_next %}
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="?page={{ applied_careers.next_page_number }}">
+                                Sau
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">Sau</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
